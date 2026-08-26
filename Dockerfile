@@ -1,7 +1,9 @@
-FROM node:20-alpine
+FROM node:20-slim
 
 # Install required system packages for PostgreSQL driver
-RUN apk add --no-cache libatomic_ops
+RUN apt-get update && apt-get install -y \
+    libatomic1 \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
