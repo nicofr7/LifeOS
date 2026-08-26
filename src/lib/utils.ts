@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { format, differenceInDays, addMonths, addYears, addWeeks } from 'date-fns'
-import { prisma } from './prisma'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -269,49 +268,8 @@ export const CURRENCIES = [
 ] as const
 
 // ===== Audit Log =====
+// These functions are server-only and must be imported from server-side code
 
-export async function createAuditLog(
-  userId: string,
-  action: string,
-  entity: string,
-  entityId?: string,
-  details?: Record<string, unknown>
-) {
-  try {
-    await prisma.auditLog.create({
-      data: {
-        userId,
-        action,
-        entity,
-        entityId: entityId || null,
-        details: details ? JSON.stringify(details) : null,
-      },
-    })
-  } catch {
-    // Don't let audit log failures break the main operation
-  }
-}
-
-// ===== Notification Helper =====
-
-export async function createNotification(
-  userId: string,
-  title: string,
-  message: string,
-  type: string = 'info',
-  actionUrl?: string
-) {
-  try {
-    await prisma.notification.create({
-      data: {
-        userId,
-        title,
-        message,
-        type,
-        actionUrl: actionUrl || null,
-      },
-    })
-  } catch {
-    // Don't let notification failures break the main operation
-  }
-}
+// import { prisma } from './prisma'
+// export async function createAuditLog(...) { ... }
+// export async function createNotification(...) { ... }
