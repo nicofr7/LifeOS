@@ -1,16 +1,28 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
 function createPrismaClient() {
-  const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL!,
-  })
+  // For PostgreSQL, use the driver adapter
+  if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgresql')) {
+    try {
+      const { PrismaPg } = require('@prisma/adapter-pg')
+      const adapter = new PrismaPg({
+        connectionString: process.env.DATABASE_URL,
+      })
+      return new PrismaClient({
+        adapter,
+        log: process.env.NODE_ENV === 'development' ? ['query'] : [],
+      })
+    } catch (e) {
+      console.warn('Failed to load PostgreSQL adapter, using default connection')
+    }
+  }
+  
+  // Fallback: use default connection (works for SQLite and basic PostgreSQL)
   return new PrismaClient({
-    adapter,
     log: process.env.NODE_ENV === 'development' ? ['query'] : [],
   })
 }
