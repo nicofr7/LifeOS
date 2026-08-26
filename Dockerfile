@@ -1,8 +1,10 @@
-FROM node:20-slim
+FROM node:20
 
-# Install required system packages for PostgreSQL driver
+# Install build tools required for native PostgreSQL bindings (pg-native)
 RUN apt-get update && apt-get install -y \
-    libatomic1 \
+    python3 \
+    build-essential \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
