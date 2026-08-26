@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  serverExternalPackages: ['@prisma/adapter-pg', 'pg', 'pg-native'],
 };
 
 export default nextConfig;
